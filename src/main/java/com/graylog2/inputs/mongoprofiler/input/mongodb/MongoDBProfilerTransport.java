@@ -41,6 +41,7 @@ public class MongoDBProfilerTransport implements Transport {
     private static final String CK_MONGO_USE_AUTH = "mongo_use_auth";
     private static final String CK_MONGO_USER = "mongo_user";
     private static final String CK_MONGO_PW = "mongo_password";
+    private static final String CK_MONGO_AUTH_DB = "mongo_auth_db";
 
     private final EventBus serverEventBus;
     private final ServerStatus serverStatus;
@@ -98,7 +99,7 @@ public class MongoDBProfilerTransport implements Transport {
         if (configuration.getBoolean(CK_MONGO_USE_AUTH)) {
             final MongoCredential credentials = MongoCredential.createCredential(
                     configuration.getString(CK_MONGO_USER),
-                    db,
+                    configuration.getString(CK_MONGO_AUTH_DB),
                     configuration.getString(CK_MONGO_PW).toCharArray()
             );
 
@@ -205,6 +206,16 @@ public class MongoDBProfilerTransport implements Transport {
                             "MongoDB password. Only used if authentication is enabled. Note that this is stored unencrypted",
                             ConfigurationField.Optional.OPTIONAL,
                             TextField.Attribute.IS_PASSWORD
+                    )
+            );
+
+            request.addField(
+                    new TextField(
+                            CK_MONGO_AUTH_DB,
+                            "MongoDB auth database",
+                            "",
+                            "MongoDB auth database. Only used if authentication is enabled.",
+                            ConfigurationField.Optional.OPTIONAL
                     )
             );
 
